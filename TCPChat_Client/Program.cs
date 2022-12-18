@@ -26,22 +26,28 @@ namespace TCPChat_Client
 
             while (true)
             {
-                Console.WriteLine("Введите сообщение для отправки на сервер:");
-                string message = Console.ReadLine();
-                byte[] bytes = Encoding.Unicode.GetBytes(message);
-
-                socket_sender.Send(bytes); //sending data to server
-
-                Console.WriteLine($"Посылка \"{message}\" отправлена на сервер");
-
-                byte[] byte_answer = new byte[1024];
-                int num_bytes = socket_sender.Receive(byte_answer); //получение сообщения от сервера
-                string answer = Encoding.Unicode.GetString(byte_answer, 0, num_bytes);
-                Console.WriteLine(answer);
-                Console.WriteLine();
+                SendMessage(socket_sender);
+               
+                // Console.WriteLine(RecieveMessage(socket_sender) + "\n");
             }
+        }
 
-            Console.ReadLine();
+        private static void SendMessage(Socket client)
+        {
+            Console.WriteLine("Введите сообщение для отправки на сервер:");
+            string message = Console.ReadLine();
+            byte[] bytes = Encoding.Unicode.GetBytes(message);
+
+            client.Send(bytes); //sending data to server
+
+            Console.WriteLine($"Посылка \"{message}\" отправлена на сервер");
+        }
+
+        private static string RecieveMessage(Socket client)
+        {
+            byte[] byte_answer = new byte[1024];
+            int num_bytes = client.Receive(byte_answer); //получение сообщения от сервера
+            return Encoding.Unicode.GetString(byte_answer, 0, num_bytes);
         }
     }
 }

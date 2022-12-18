@@ -34,10 +34,11 @@ namespace TCPChat_Client
 
                 Console.WriteLine($"Посылка \"{message}\" отправлена на сервер");
 
-                byte[] bytes_answer = new byte[1024];
-                int num_bytes = socket_sender.Receive(bytes_answer); //получение сообщения от клиента
-                string answer = Encoding.Unicode.GetString(bytes_answer, 0, num_bytes);
+                byte[] byte_answer = new byte[1024];
+                int num_bytes = socket_sender.Receive(byte_answer); //получение сообщения от сервера
+                string answer = Encoding.Unicode.GetString(byte_answer, 0, num_bytes);
                 Console.WriteLine(answer);
+                Console.WriteLine();
             }
 
             Console.ReadLine();

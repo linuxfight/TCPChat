@@ -24,23 +24,37 @@ namespace TCPChat_Client
 
             socket_sender.Connect(endPoint); //connecting to remote endpoint
 
+            Action<Socket> taskSendMessage = SendMessageForTask;
+            Action<Socket> taskRecieveMessage = RecieveMessageForTask;
+
+            IAsyncResult resSend = taskSendMessage.BeginInvoke(socket_sender, null, null);
+            IAsyncResult resRecieve = taskRecieveMessage.BeginInvoke(socket_sender, null, null);
+
+            taskSendMessage.EndInvoke(resSend);
+            taskRecieveMessage.EndInvoke(resRecieve);
+        }
+
+        public static void SendMessageForTask(Socket socket_sender)
+        {
             while (true)
             {
-                SendMessage(socket_sender);
-               
-                // Console.WriteLine(RecieveMessage(socket_sender) + "\n");
+                string message = Console.ReadLine();
+                SendMessage(socket_sender, $"[CLIENT]: {message}");
             }
         }
 
-        private static void SendMessage(Socket client)
+        public static void RecieveMessageForTask(Socket socket)
         {
-            Console.WriteLine("Введите сообщение для отправки на сервер:");
-            string message = Console.ReadLine();
+            while (true)
+            {
+                Console.WriteLine(RecieveMessage(socket));
+            }
+        }
+
+        private static void SendMessage(Socket client, string message)
+        {
             byte[] bytes = Encoding.Unicode.GetBytes(message);
-
             client.Send(bytes); //sending data to server
-
-            Console.WriteLine($"Посылка \"{message}\" отправлена на сервер");
         }
 
         private static string RecieveMessage(Socket client)

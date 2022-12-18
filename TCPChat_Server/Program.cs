@@ -30,18 +30,12 @@ namespace TCPChat_Server
 
             Console.WriteLine("Клиент на связи!");
 
+            //менеджер для приёма сообщений
             Thread threadRecieve = new Thread(RecieveMessageForManager); //создаём менеджера (что)
             threadRecieve.Start(client);
-
-            while (true)
-            {
-                //string message = RecieveMessage(client);
-                //Console.WriteLine(message);
-
-                //ответное сообщение от сервера к клиенту
-                string sendMessage = Console.ReadLine();
-                SendMessage(client, sendMessage);
-            }
+            //менеджер для отправки сообщений
+            Thread threadSend = new Thread(SendMessageForManager);
+            threadSend.Start(client);
         }
 
         private static string RecieveMessage(Socket client)
@@ -53,11 +47,22 @@ namespace TCPChat_Server
 
         private static void RecieveMessageForManager(Object objSocket)
         {
+            Socket client = objSocket as Socket;
+
             while (true)
             {
-                Socket client = objSocket as Socket;
-
                 Console.WriteLine($"[MANAGER]: {RecieveMessage(client)}");
+            }
+        }
+
+        private static void SendMessageForManager(Object objSocket)
+        {
+            Socket client = objSocket as Socket;
+
+            while (true)
+            {
+                string sendMessage = Console.ReadLine();
+                SendMessage(client, sendMessage);
             }
         }
 
